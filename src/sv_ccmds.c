@@ -1424,7 +1424,6 @@ void SV_Serverinfo_f (void)
 		Con_Printf ("usage: serverinfo [ <key> [ <value> ] ]\n");
 		return;
 	}
-
 	key = Cmd_Argv(1);
 	value = Cmd_Argv(2);
 

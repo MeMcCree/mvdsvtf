@@ -142,7 +142,9 @@ Con_Printf
 Handles cursor positioning, line wrapping, etc
 ================
 */
+
 #define	MAXPRINTMSG	4096
+
 void Con_Printf (char *fmt, ...)
 {
 	va_list argptr;

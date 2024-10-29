@@ -2473,6 +2473,7 @@ intptr_t PR2_GameSystemCalls(intptr_t *args) {
 		localcmd (string)
 		================= */
 		Cbuf_AddTextEx(&cbuf_server, VMA(1));
+		Cbuf_Execute();
 		return 0;
 	case G_CVAR:
 		return PASSFLOAT(Cvar_Value(VMA(1)));
