@@ -869,6 +869,12 @@ void SV_UpdateClientStats (client_t *client)
 	stats[STAT_NAILS] = ent->v->ammo_nails;
 	stats[STAT_ROCKETS] = ent->v->ammo_rockets;
 	stats[STAT_CELLS] = ent->v->ammo_cells;
+	stats[STAT_NUMGREN1] = ent->v->numgren1;
+	stats[STAT_NUMGREN2] = ent->v->numgren2;
+	stats[STAT_TPGREN1] = ent->v->tpgren1;
+	stats[STAT_TPGREN2] = ent->v->tpgren2;
+	stats[STAT_CLIP] = ent->v->currentclip;
+
 	if (!client->spectator || client->spec_track > 0)
 		stats[STAT_ACTIVEWEAPON] = ent->v->weapon;
 	// stuff the sigil bits into the high bits of items for sbar
@@ -879,7 +885,7 @@ void SV_UpdateClientStats (client_t *client)
 	if (ent->v->health > 0 || client->spectator) // viewheight for PF_DEAD & PF_GIB is hardwired
 		stats[STAT_VIEWHEIGHT] = ent->v->view_ofs[2];
 
-	for (i=0 ; i<MAX_CL_STATS ; i++)
+	for (i=0 ; i<MAX_CL_STATS; i++)
 		if (stats[i] != client->stats[i])
 		{
 			client->stats[i] = stats[i];
@@ -1269,6 +1275,11 @@ void MVD_WriteStats(void)
 		stats[STAT_ROCKETS] = ent->v->ammo_rockets;
 		stats[STAT_CELLS] = ent->v->ammo_cells;
 		stats[STAT_ACTIVEWEAPON] = ent->v->weapon;
+		stats[STAT_NUMGREN1] = ent->v->numgren1;
+		stats[STAT_NUMGREN2] = ent->v->numgren2;
+		stats[STAT_TPGREN1] = ent->v->tpgren1;
+		stats[STAT_TPGREN2] = ent->v->tpgren2;
+		stats[STAT_CLIP] = ent->v->currentclip;
 
 		if (ent->v->health > 0) // viewheight for PF_DEAD & PF_GIB is hardwired
 			stats[STAT_VIEWHEIGHT] = ent->v->view_ofs[2];

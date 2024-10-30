@@ -1587,6 +1587,11 @@ void SV_MVD_SendInitialGamestate(mvddest_t* dest)
 		stats[STAT_ROCKETS]      = ent->v->ammo_rockets;
 		stats[STAT_CELLS]        = ent->v->ammo_cells;
 		stats[STAT_ACTIVEWEAPON] = ent->v->weapon;
+		stats[STAT_NUMGREN1] = ent->v->numgren1;
+		stats[STAT_NUMGREN2] = ent->v->numgren2;
+		stats[STAT_TPGREN1] = ent->v->tpgren1;
+		stats[STAT_TPGREN2] = ent->v->tpgren2;
+		stats[STAT_CLIP] = ent->v->currentclip;
 
 		if (ent->v->health > 0) // viewheight for PF_DEAD & PF_GIB is hardwired
 			stats[STAT_VIEWHEIGHT] = ent->v->view_ofs[2];

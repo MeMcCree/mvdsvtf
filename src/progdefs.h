@@ -157,6 +157,11 @@ typedef struct
 	string_t	noise1;
 	string_t	noise2;
 	string_t	noise3;
+	int numgren1;
+	int numgren2;
+	int tpgren1;
+	int tpgren2;
+	int currentclip;
 } entvars_t;
 
 #define PROGHEADER_CRC 54730

@@ -2380,6 +2380,23 @@ void PF2_VisibleTo(int viewer, int first, int len, byte *visible)
 	}
 }
 
+void PF2_numgrens(int entnum, int num) {
+	client_t* cl;
+	int i;
+
+	if (entnum < 1 || entnum > MAX_CLIENTS) {
+		Con_Printf( "tried to change grenade number to a non-client %d \n", entnum );
+		return;
+	}
+
+	cl = &svs.clients[entnum - 1];
+
+	cl->stats[STAT_NUMGREN1] = num;
+	ClientReliableWrite_Begin(cl, svc_updatestat, 3);
+	ClientReliableWrite_Byte(cl, STAT_NUMGREN1);
+	ClientReliableWrite_Byte(cl, cl->stats[STAT_NUMGREN1]);
+}
+
 //===========================================================================
 // SysCalls
 //===========================================================================
@@ -2676,6 +2693,9 @@ intptr_t PR2_GameSystemCalls(intptr_t *args) {
 		VM_CheckBounds(sv_vm, args[4], args[3]);
 		memset(VMA(4), 0, args[3]); // Ensure same memory state on each run.
 		PF2_VisibleTo(args[1], args[2], args[3], VMA(4));
+		return 0;
+	case G_NUMGRENS:
+		PF2_numgrens(args[1], args[2]);
 		return 0;
 	default:
 		SV_Error("Bad game system trap: %ld", (long int)args[0]);

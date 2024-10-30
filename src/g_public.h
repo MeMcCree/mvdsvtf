@@ -170,6 +170,7 @@ typedef enum
 	G_SETUSERINFO,
 	G_MOVETOGOAL,
 	G_VISIBLETO,
+	G_NUMGRENS,
 	_G__LASTAPI
 } gameImport_t;
 
