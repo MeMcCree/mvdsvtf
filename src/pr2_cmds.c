@@ -2380,21 +2380,18 @@ void PF2_VisibleTo(int viewer, int first, int len, byte *visible)
 	}
 }
 
-void PF2_numgrens(int entnum, int num) {
-	client_t* cl;
+void PF2_updatetimer(int time) {
 	int i;
+	client_t* cl;
 
-	if (entnum < 1 || entnum > MAX_CLIENTS) {
-		Con_Printf( "tried to change grenade number to a non-client %d \n", entnum );
-		return;
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++) {
+		if (cl->state || cl->spectator) {
+			if (!strcmp(Info_Get(&cl->_userinfo_ctx_, "*client"), "ezQuake-tf") && atoi(Info_Get(&cl->_userinfo_ctx_, "*clientver")) > 1) {
+				ClientReliableWrite_Begin(cl, svc_updatetimer, 5);
+				ClientReliableWrite_Long(cl, time);
+			}
+		}
 	}
-
-	cl = &svs.clients[entnum - 1];
-
-	cl->stats[STAT_NUMGREN1] = num;
-	ClientReliableWrite_Begin(cl, svc_updatestat, 3);
-	ClientReliableWrite_Byte(cl, STAT_NUMGREN1);
-	ClientReliableWrite_Byte(cl, cl->stats[STAT_NUMGREN1]);
 }
 
 //===========================================================================
@@ -2694,8 +2691,8 @@ intptr_t PR2_GameSystemCalls(intptr_t *args) {
 		memset(VMA(4), 0, args[3]); // Ensure same memory state on each run.
 		PF2_VisibleTo(args[1], args[2], args[3], VMA(4));
 		return 0;
-	case G_NUMGRENS:
-		PF2_numgrens(args[1], args[2]);
+	case G_UPDATETIMER:
+		PF2_updatetimer(args[1]);
 		return 0;
 	default:
 		SV_Error("Bad game system trap: %ld", (long int)args[0]);
