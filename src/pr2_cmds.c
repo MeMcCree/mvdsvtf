@@ -2394,6 +2394,23 @@ void PF2_updatetimer(int time) {
 	}
 }
 
+void PF2_updateicons(int entnum, int iconnum) {
+	int i;
+	client_t* cl;
+
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++) {
+		if (i == entnum - 1)
+			continue;
+		if (cl->state || cl->spectator) {
+			if (!strcmp(Info_Get(&cl->_userinfo_ctx_, "*client"), "ezQuake-tf") && atoi(Info_Get(&cl->_userinfo_ctx_, "*clientver")) > 2) {
+				ClientReliableWrite_Begin(cl, svc_updateicons, 6);
+				ClientReliableWrite_Long(cl, entnum - 1);
+				ClientReliableWrite_Byte(cl, iconnum);
+			}
+		}
+	}
+}
+
 //===========================================================================
 // SysCalls
 //===========================================================================
@@ -2693,6 +2710,9 @@ intptr_t PR2_GameSystemCalls(intptr_t *args) {
 		return 0;
 	case G_UPDATETIMER:
 		PF2_updatetimer(args[1]);
+		return 0;
+	case G_UPDATEICONS:
+		PF2_updateicons(args[1], args[2]);
 		return 0;
 	default:
 		SV_Error("Bad game system trap: %ld", (long int)args[0]);
