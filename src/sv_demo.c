@@ -1592,6 +1592,10 @@ void SV_MVD_SendInitialGamestate(mvddest_t* dest)
 		stats[STAT_TPGREN1] = ent->v->tpgren1;
 		stats[STAT_TPGREN2] = ent->v->tpgren2;
 		stats[STAT_CLIP] = ent->v->currentclip;
+		stats[STAT_TFSTATE] = ent->v->tfstate;
+		stats[STAT_SENTRY] = ent->v->sentry;
+		stats[STAT_DISP] = ent->v->dispenser;
+		stats[STAT_DISPADD] = ent->v->dispenser_add;
 
 		if (ent->v->health > 0) // viewheight for PF_DEAD & PF_GIB is hardwired
 			stats[STAT_VIEWHEIGHT] = ent->v->view_ofs[2];

@@ -31,3 +31,4 @@ build/vs/*.db
 build/vs/*.def
 build/vs/*.ilk
 /.cache
+deploy.sh
