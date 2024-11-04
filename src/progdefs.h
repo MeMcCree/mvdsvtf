@@ -166,6 +166,7 @@ typedef struct
 	int sentry;
 	int dispenser;
 	int dispenser_add;
+	int spydata;
 } entvars_t;
 
 #define PROGHEADER_CRC 54730

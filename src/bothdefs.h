@@ -88,6 +88,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define STAT_SENTRY 		    26
 #define STAT_DISP 		        27
 #define STAT_DISPADD 		    28
+#define STAT_SPYINFO 			29
 
 //
 // item flags

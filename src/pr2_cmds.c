@@ -2380,6 +2380,9 @@ void PF2_VisibleTo(int viewer, int first, int len, byte *visible)
 	}
 }
 
+#define svc_updatetimer 55
+#define svc_updateicons 56
+
 void PF2_updatetimer(int time) {
 	int i;
 	client_t* cl;

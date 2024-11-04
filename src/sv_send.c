@@ -878,6 +878,7 @@ void SV_UpdateClientStats (client_t *client)
 	stats[STAT_SENTRY] = ent->v->sentry;
 	stats[STAT_DISP] = ent->v->dispenser;
 	stats[STAT_DISPADD] = ent->v->dispenser_add;
+	stats[STAT_SPYINFO] = ent->v->spydata;
 
 	if (!client->spectator || client->spec_track > 0)
 		stats[STAT_ACTIVEWEAPON] = ent->v->weapon;
@@ -1288,6 +1289,7 @@ void MVD_WriteStats(void)
 		stats[STAT_SENTRY] = ent->v->sentry;
 		stats[STAT_DISP] = ent->v->dispenser;
 		stats[STAT_DISPADD] = ent->v->dispenser_add;
+		stats[STAT_SPYINFO] = ent->v->spydata;
 
 		if (ent->v->health > 0) // viewheight for PF_DEAD & PF_GIB is hardwired
 			stats[STAT_VIEWHEIGHT] = ent->v->view_ofs[2];
