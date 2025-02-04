@@ -924,6 +924,7 @@ static qbool CM_LoadPhysicsNormalsData(byte* data, int datalength)
 		return false;
 	}
 
+#if 0
 #ifndef CLIENTONLY
 	{
 		float* cvars = (float*)data;
@@ -931,6 +932,7 @@ static qbool CM_LoadPhysicsNormalsData(byte* data, int datalength)
 
 		Cvar_SetValue(&pm_rampjump, LittleFloat(cvars[0]));
 	}
+#endif
 #endif
 	// Meag: previously the maximum speed was set here but I don't think it should be map-specific (?)
 
@@ -951,12 +953,14 @@ static void CM_LoadPhysicsNormals(byte *physnormals, int len_physnormals)
 	int i;
 	qbool bspx_loaded = false;
 
+#if 0
 	// Allocate memory, all maps default to rampjump off
 #ifndef CLIENTONLY
 	{
 		extern cvar_t pm_rampjump;
 		Cvar_SetValue(&pm_rampjump, 0);
 	}
+#endif
 #endif
 	map_physicsnormals = Hunk_AllocName(numclipnodes * sizeof(map_physicsnormals[0]), loadname);
 

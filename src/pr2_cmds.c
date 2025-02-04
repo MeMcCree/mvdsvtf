@@ -2380,9 +2380,6 @@ void PF2_VisibleTo(int viewer, int first, int len, byte *visible)
 	}
 }
 
-#define svc_updatetimer 55
-#define svc_updateicons 56
-
 void PF2_updatetimer(int time) {
 	int i;
 	client_t* cl;
@@ -2411,6 +2408,45 @@ void PF2_updateicons(int entnum, int iconnum) {
 				ClientReliableWrite_Byte(cl, iconnum);
 			}
 		}
+	}
+}
+
+void PF2_updateflaginfosingle(int entnum, int team, flaginfo_t* flaginfo) {
+	if (entnum < 1 || entnum > MAX_CLIENTS) {
+		Con_Printf("Tried updating flaginfo of non-client %d \n", entnum);
+		return;
+	}
+
+	client_t* cl = &svs.clients[entnum - 1];
+	if (!strcmp(Info_Get(&cl->_userinfo_ctx_, "*client"), "ezQuake-tf") && atoi(Info_Get(&cl->_userinfo_ctx_, "*clientver")) > 3) {
+		switch (flaginfo->state) {
+		case FLAG_ON_BASE:
+			ClientReliableWrite_Begin(cl, svc_updateflaginfo, 3);
+			ClientReliableWrite_Byte(cl, (char)team);
+			ClientReliableWrite_Byte(cl, (char)FLAG_ON_BASE);
+			break;
+		case FLAG_ON_GROUND:
+			ClientReliableWrite_Begin(cl, svc_updateflaginfo, 7);
+			ClientReliableWrite_Byte(cl, (char)team);
+			ClientReliableWrite_Byte(cl, (char)FLAG_ON_GROUND);
+			ClientReliableWrite_Long(cl, flaginfo->end);
+			break;
+		case FLAG_CARRIED:
+			Con_Printf("Team: %d\n", team);
+			ClientReliableWrite_Begin(cl, svc_updateflaginfo, 3 + strlen(flaginfo->nickname));
+			ClientReliableWrite_Byte(cl, (char)team);
+			ClientReliableWrite_Byte(cl, (char)FLAG_CARRIED);
+			ClientReliableWrite_String(cl, flaginfo->nickname);
+			break;
+		}
+	}
+}
+
+void PF2_updateflaginfobroadcast(int team, flaginfo_t* flaginfo) {	
+	int i;
+
+	for (i = 1; i <= MAX_CLIENTS; i++) {
+		PF2_updateflaginfosingle(i, team, flaginfo);
 	}
 }
 
@@ -2716,6 +2752,26 @@ intptr_t PR2_GameSystemCalls(intptr_t *args) {
 		return 0;
 	case G_UPDATEICONS:
 		PF2_updateicons(args[1], args[2]);
+		return 0;
+	case G_UPDATEFLAGINFO:
+		int type = args[1];
+		int team = args[2];
+		int state = args[3];
+		flaginfo_t flaginfo;
+		flaginfo.state = state;
+		switch (state) {
+		case FLAG_ON_GROUND:
+			flaginfo.end = args[4];
+			break;
+		case FLAG_CARRIED:
+			strncpy(flaginfo.nickname, VMA(4), 64);
+			break;
+		}
+		if (type == UPDATEFLAGINFO_BROADCAST) {
+			PF2_updateflaginfobroadcast(team, &flaginfo);
+		} else if (type == UPDATEFLAGINFO_SINGLE) {
+			PF2_updateflaginfosingle((state == FLAG_ON_BASE ? args[4] : args[5]), team, &flaginfo);
+		}
 		return 0;
 	default:
 		SV_Error("Bad game system trap: %ld", (long int)args[0]);
