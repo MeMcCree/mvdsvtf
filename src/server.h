@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SPECPRINT_CENTERPRINT	0x1
 #define SPECPRINT_SPRINT	0x2
 #define SPECPRINT_STUFFCMD	0x4
+#define SPECPRINT_STUFFCMD_LIMITED 0x8
 
 typedef enum {
 	ss_dead,	// no map loaded

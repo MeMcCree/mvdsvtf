@@ -869,16 +869,18 @@ void SV_UpdateClientStats (client_t *client)
 	stats[STAT_NAILS] = ent->v->ammo_nails;
 	stats[STAT_ROCKETS] = ent->v->ammo_rockets;
 	stats[STAT_CELLS] = ent->v->ammo_cells;
-	stats[STAT_NUMGREN1] = ent->v->numgren1;
-	stats[STAT_NUMGREN2] = ent->v->numgren2;
-	stats[STAT_TPGREN1] = ent->v->tpgren1;
-	stats[STAT_TPGREN2] = ent->v->tpgren2;
-	stats[STAT_CLIP] = ent->v->currentclip;
-	stats[STAT_TFSTATE] = ent->v->tfstate;
-	stats[STAT_SENTRY] = ent->v->sentry;
-	stats[STAT_DISP] = ent->v->dispenser;
-	stats[STAT_DISPADD] = ent->v->dispenser_add;
-	stats[STAT_SPYINFO] = ent->v->spydata;
+	if (!strcmp(Info_Get(&client->_userinfo_ctx_, "*client"), "ezQuake-tf")) {
+		stats[STAT_NUMGREN1] = ent->v->numgren1;
+		stats[STAT_NUMGREN2] = ent->v->numgren2;
+		stats[STAT_TPGREN1] = ent->v->tpgren1;
+		stats[STAT_TPGREN2] = ent->v->tpgren2;
+		stats[STAT_CLIP] = ent->v->currentclip;
+		stats[STAT_TFSTATE] = ent->v->tfstate;
+		stats[STAT_SENTRY] = ent->v->sentry;
+		stats[STAT_DISP] = ent->v->dispenser;
+		stats[STAT_DISPADD] = ent->v->dispenser_add;
+		stats[STAT_SPYINFO] = ent->v->spydata;
+	}
 
 	if (!client->spectator || client->spec_track > 0)
 		stats[STAT_ACTIVEWEAPON] = ent->v->weapon;
@@ -1280,16 +1282,18 @@ void MVD_WriteStats(void)
 		stats[STAT_ROCKETS] = ent->v->ammo_rockets;
 		stats[STAT_CELLS] = ent->v->ammo_cells;
 		stats[STAT_ACTIVEWEAPON] = ent->v->weapon;
-		stats[STAT_NUMGREN1] = ent->v->numgren1;
-		stats[STAT_NUMGREN2] = ent->v->numgren2;
-		stats[STAT_TPGREN1] = ent->v->tpgren1;
-		stats[STAT_TPGREN2] = ent->v->tpgren2;
-		stats[STAT_CLIP] = ent->v->currentclip;
-		stats[STAT_TFSTATE] = ent->v->tfstate;
-		stats[STAT_SENTRY] = ent->v->sentry;
-		stats[STAT_DISP] = ent->v->dispenser;
-		stats[STAT_DISPADD] = ent->v->dispenser_add;
-		stats[STAT_SPYINFO] = ent->v->spydata;
+		if (!strcmp(Info_Get(&c->_userinfo_ctx_, "*client"), "ezQuake-tf")) {
+			stats[STAT_NUMGREN1] = ent->v->numgren1;
+			stats[STAT_NUMGREN2] = ent->v->numgren2;
+			stats[STAT_TPGREN1] = ent->v->tpgren1;
+			stats[STAT_TPGREN2] = ent->v->tpgren2;
+			stats[STAT_CLIP] = ent->v->currentclip;
+			stats[STAT_TFSTATE] = ent->v->tfstate;
+			stats[STAT_SENTRY] = ent->v->sentry;
+			stats[STAT_DISP] = ent->v->dispenser;
+			stats[STAT_DISPADD] = ent->v->dispenser_add;
+			stats[STAT_SPYINFO] = ent->v->spydata;
+		}
 
 		if (ent->v->health > 0) // viewheight for PF_DEAD & PF_GIB is hardwired
 			stats[STAT_VIEWHEIGHT] = ent->v->view_ofs[2];

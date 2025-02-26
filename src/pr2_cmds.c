@@ -749,6 +749,21 @@ void PF2_stuffcmd(int entnum, char *str, int flags)
 				}
 			}
 		}
+
+		if ((int)sv_specprint.value & SPECPRINT_STUFFCMD_LIMITED && strlen(buf) > 1 && buf[0] == 'v' && buf[1] == '_')
+		{
+			for (j = 0, spec = svs.clients; j < MAX_CLIENTS; j++, spec++)
+			{
+				if (!cl->state || !spec->spectator)
+					continue;
+
+				if ((spec->spec_track == entnum) && (cl->spec_print & SPECPRINT_STUFFCMD))
+				{
+					ClientReliableWrite_Begin (spec, svc_stufftext, 2+strlen(buf));
+					ClientReliableWrite_String (spec, buf);
+				}
+			}
+		}
 		buf[0] = 0;
 	}
 
@@ -2450,6 +2465,32 @@ void PF2_updateflaginfobroadcast(int team, flaginfo_t* flaginfo) {
 	}
 }
 
+void PF2_updatetfinfosingle(int entnum, int tonum, int team, int class) {
+	if (entnum < 1 || entnum > MAX_CLIENTS) {
+		Con_Printf("Tried sending tfinfo of non-client %d \n", entnum);
+		return;
+	}
+	if (tonum < 1 || tonum > MAX_CLIENTS) {
+		Con_Printf("Tried sending tfinfo to non-client %d \n", entnum);
+		return;
+	}
+	client_t* cl = &svs.clients[tonum - 1];
+	if (!strcmp(Info_Get(&cl->_userinfo_ctx_, "*client"), "ezQuake-tf") && atoi(Info_Get(&cl->_userinfo_ctx_, "*clientver")) > 4) {
+		ClientReliableWrite_Begin(cl, svc_updatetfinfo, 13);
+		ClientReliableWrite_Long(cl, entnum - 1);
+		ClientReliableWrite_Long(cl, team);
+		ClientReliableWrite_Long(cl, class);
+	}
+}
+
+void PF2_updatetfinfobroadcast(int entnum, int team, int class) {	
+	int i;
+
+	for (i = 1; i <= MAX_CLIENTS; i++) {
+		PF2_updatetfinfosingle(entnum, i, team, class);
+	}
+}
+
 //===========================================================================
 // SysCalls
 //===========================================================================
@@ -2754,6 +2795,7 @@ intptr_t PR2_GameSystemCalls(intptr_t *args) {
 		PF2_updateicons(args[1], args[2]);
 		return 0;
 	case G_UPDATEFLAGINFO:
+	{
 		int type = args[1];
 		int team = args[2];
 		int state = args[3];
@@ -2773,6 +2815,24 @@ intptr_t PR2_GameSystemCalls(intptr_t *args) {
 			PF2_updateflaginfosingle((state == FLAG_ON_BASE ? args[4] : args[5]), team, &flaginfo);
 		}
 		return 0;
+	}
+	case G_UPDATETFINFO:
+	{
+		int type = args[1];
+		int ent = args[2];
+		int team, class;
+		if (!type) {
+			team = args[3];
+			class = args[4];
+			PF2_updatetfinfobroadcast(ent, team, class);
+		} else {
+			int to = args[3];
+			team = args[4];
+			class = args[5];
+			PF2_updatetfinfosingle(ent, to, team, class);
+		}
+		return 0;
+	}
 	default:
 		SV_Error("Bad game system trap: %ld", (long int)args[0]);
 	}

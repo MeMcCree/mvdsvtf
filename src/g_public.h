@@ -173,6 +173,7 @@ typedef enum
 	G_UPDATETIMER,
 	G_UPDATEICONS,
 	G_UPDATEFLAGINFO,
+	G_UPDATETFINFO,
 	_G__LASTAPI
 } gameImport_t;
 
