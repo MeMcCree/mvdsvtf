@@ -2465,7 +2465,7 @@ void PF2_updateflaginfobroadcast(int team, flaginfo_t* flaginfo) {
 	}
 }
 
-void PF2_updatetfinfosingle(int entnum, int tonum, int team, int class) {
+void PF2_updatetfinfosingle(int entnum, int tonum, int idx, int val) {
 	if (entnum < 1 || entnum > MAX_CLIENTS) {
 		Con_Printf("Tried sending tfinfo of non-client %d \n", entnum);
 		return;
@@ -2475,11 +2475,11 @@ void PF2_updatetfinfosingle(int entnum, int tonum, int team, int class) {
 		return;
 	}
 	client_t* cl = &svs.clients[tonum - 1];
-	if (!strcmp(Info_Get(&cl->_userinfo_ctx_, "*client"), "ezQuake-tf") && atoi(Info_Get(&cl->_userinfo_ctx_, "*clientver")) > 4) {
+	if (!strcmp(Info_Get(&cl->_userinfo_ctx_, "*client"), "ezQuake-tf") && atoi(Info_Get(&cl->_userinfo_ctx_, "*clientver")) > 5) {
 		ClientReliableWrite_Begin(cl, svc_updatetfinfo, 13);
 		ClientReliableWrite_Long(cl, entnum - 1);
-		ClientReliableWrite_Long(cl, team);
-		ClientReliableWrite_Long(cl, class);
+		ClientReliableWrite_Long(cl, idx);
+		ClientReliableWrite_Long(cl, val);
 	}
 }
 
@@ -2820,16 +2820,16 @@ intptr_t PR2_GameSystemCalls(intptr_t *args) {
 	{
 		int type = args[1];
 		int ent = args[2];
-		int team, class;
+		int idx, val;
 		if (!type) {
-			team = args[3];
-			class = args[4];
-			PF2_updatetfinfobroadcast(ent, team, class);
+			idx = args[3];
+			val = args[4];
+			PF2_updatetfinfobroadcast(ent, idx, val);
 		} else {
 			int to = args[3];
-			team = args[4];
-			class = args[5];
-			PF2_updatetfinfosingle(ent, to, team, class);
+			idx = args[4];
+			val = args[5];
+			PF2_updatetfinfosingle(ent, to, idx, val);
 		}
 		return 0;
 	}

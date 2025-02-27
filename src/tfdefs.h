@@ -27,8 +27,4 @@ typedef struct {
 	};
 } flaginfo_t;
 
-#define TFINFO_ALL 			0
-#define TFINFO_TEAM 		1
-#define TFINFO_PLAYERCLASS 	2
-
 #endif
